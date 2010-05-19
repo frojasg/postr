@@ -20,16 +20,21 @@ from ErrorDialog import ErrorDialog
 from util import greek
 from xml.sax.saxutils import escape
 
-class StatusBar(gtk.Label):
-    def __init__(self, flickr):
+class StatusBar(gtk.Label, gtk.Buildable):
+
+    __gtype_name__ = 'StatusBar'
+
+    def __init__(self):
         gtk.Label.__init__(self)
         self.set_alignment(0.0, 0.5)
-        self.flickr = flickr
         self.quota = None
         self.to_upload = None
         # In case we are offline or we can not get the max file size to
         # upload, we assume a pro account (20M)
         self.maxfile = 20
+
+    def set_flickr(self, flickr):
+        self.flickr = flickr
 
     def __update(self):
         message = ""

@@ -17,11 +17,13 @@
 
 import gobject, gtk
 
-class LicenseCombo(gtk.ComboBox):
-    def __init__(self, flickr):
+class LicenseCombo(gtk.ComboBox, gtk.Buildable):
+
+    __gtype_name__ = 'LicenseCombo'
+
+    def __init__(self):
         gtk.ComboBox.__init__(self)
-        self.flickr = flickr
-        
+
         self.model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT)
         self.model.set(self.model.append(), 0, _("Default"), 1, -1)
         self.set_model(self.model)
@@ -30,6 +32,9 @@ class LicenseCombo(gtk.ComboBox):
         cell = gtk.CellRendererText()
         self.pack_start(cell)
         self.add_attribute(cell, "text", 0)
+
+    def set_flickr(self, flickr):
+        self.flickr = flickr
 
     def twisted_error(self, failure):
         from ErrorDialog import ErrorDialog

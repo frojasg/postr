@@ -17,7 +17,9 @@
 
 import gobject, gtk
 
-class SafetyCombo(gtk.ComboBox):
+class SafetyCombo(gtk.ComboBox, gtk.Buildable):
+    __gtype_name__ = 'SafetyCombo'
+
     def __init__(self):
         gtk.ComboBox.__init__(self)
         # Name, is_public, is_family, is_friend

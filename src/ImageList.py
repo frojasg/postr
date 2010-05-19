@@ -24,7 +24,10 @@ import ImageStore
 (DRAG_URI,
  DRAG_IMAGE) = range (0, 2)
 
-class ImageList(gtk.TreeView):
+class ImageList(gtk.TreeView, gtk.Buildable):
+
+    __gtype_name__ = 'ImageList'
+
     def __init__(self):
         gtk.TreeView.__init__(self)
 

@@ -17,7 +17,10 @@
 
 import gobject, gtk
 
-class ContentTypeCombo(gtk.ComboBox):
+class ContentTypeCombo(gtk.ComboBox, gtk.Buildable):
+
+    __gtype_name__ = 'ContentTypeCombo'
+
     def __init__(self):
         gtk.ComboBox.__init__(self)
         # Name, content_type

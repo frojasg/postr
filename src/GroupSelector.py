@@ -24,14 +24,15 @@ import util
  COL_NAME,
  COL_ICON) = range(0, 4)
 
-class GroupSelector(gtk.TreeView):
+class GroupSelector(gtk.TreeView, gtk.Buildable):
+
+    __gtype_name__ = 'GroupSelector'
 
     __gsignals__ = {
         'changed' : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
         }
     
-    def __init__(self, flickr):
-        self.flickr = flickr
+    def __init__(self):
         self.model = gtk.ListStore(gobject.TYPE_BOOLEAN,
                                    gobject.TYPE_STRING,
                                    gobject.TYPE_STRING,
@@ -76,6 +77,9 @@ class GroupSelector(gtk.TreeView):
         self.set_search_equal_func(search_func)
         # TODO: enable case insensitive substring searching
     
+    def set_flickr(self, flickr):
+        self.flickr = flickr
+
     def style_set(self, widget, old_style):
         self.thumb_size = self.text_renderer.get_size(self, None)[3]
 

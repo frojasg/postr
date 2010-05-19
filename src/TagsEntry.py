@@ -21,11 +21,12 @@ _USER_POPULAR_TAGS = 200
 _HOTS_TAGS = 20
 _COL_TAG_NAME = 0
 
-class TagsEntry(gtk.Entry):
-    def __init__(self, flickr):
-        gtk.Entry.__init__(self)
+class TagsEntry(gtk.Entry, gtk.Buildable):
 
-        self.flickr = flickr
+    __gtype_name__ = 'TagsEntry'
+
+    def __init__(self):
+        gtk.Entry.__init__(self)
 
         # Create the completion object
         self.completion = gtk.EntryCompletion()
@@ -44,6 +45,9 @@ class TagsEntry(gtk.Entry):
         self.completion_model = gtk.ListStore(str)
 
         self.show_all()
+
+    def set_flickr(self, flickr):
+        self.flickr = flickr
 
     def on_completion_match(self, completion, model, iter):
         current_text = self.get_text()

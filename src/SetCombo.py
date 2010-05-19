@@ -30,10 +30,12 @@ _DEFAULT_NEW_PHOTOSET_NAME = datetime.datetime.strftime(datetime.datetime.today(
   COL_SETLABEL,
   COL_THUMBNAIL ) = range(0, 3)
 
-class SetCombo(gtk.ComboBox):
-    def __init__(self, flickr):
+class SetCombo(gtk.ComboBox, gtk.Buildable):
+
+    __gtype_name__ = 'SetCombo'
+
+    def __init__(self):
         gtk.ComboBox.__init__(self)
-        self.flickr = flickr
         
         # Calculate the size of thumbnails based on the size of the text
         # renderer, but provide a default in case style-set isn't called.
@@ -57,6 +59,9 @@ class SetCombo(gtk.ComboBox):
         self.text_renderer = gtk.CellRendererText()
         self.pack_start (self.text_renderer, expand=False)
         self.set_attributes(self.text_renderer, text=COL_SETLABEL)
+
+    def set_flickr(self, flickr):
+        self.flickr = flickr
 
     def style_set(self, widget, old_style):
         self.thumb_size = self.text_renderer.get_size(self, None)[3]

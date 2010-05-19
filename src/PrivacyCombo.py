@@ -17,7 +17,10 @@
 
 import gobject, gtk
 
-class PrivacyCombo(gtk.ComboBox):
+class PrivacyCombo(gtk.ComboBox, gtk.Buildable):
+
+    __gtype_name__ = 'PrivacyCombo'
+
     def __init__(self):
         gtk.ComboBox.__init__(self)
         # Name, is_public, is_family, is_friend

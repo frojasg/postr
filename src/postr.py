@@ -36,6 +36,7 @@ from ProgressDialog import ProgressDialog
 from ErrorDialog import ErrorDialog
 import ImageStore, ImageList, StatusBar, PrivacyCombo, SafetyCombo, GroupSelector, ContentTypeCombo
 from proxyclient import EXTRA_STEP_SET_ID, EXTRA_STEP_GROUPS, EXTRA_STEP_LICENSE, EXTRA_STEP_NEW_SET, UploadProgressTracker
+import SetCombo, TagsEntry, LicenseCombo
 
 from flickrest import Flickr
 import EXIF
@@ -80,12 +81,13 @@ class Postr(UniqueApp):
         self.logo_icon_size = gtk.icon_size_register("logo", 128, 128)
         
         gtk.window_set_default_icon_name("postr")
-        gtk.glade.set_custom_handler(self.get_custom_handler)
-        glade = gtk.glade.XML(os.path.join(os.path.dirname(__file__), "postr.glade"))
-        glade.signal_autoconnect(self)
 
-        get_glade_widgets(glade, self,
-                           ("window",
+        builder = gtk.Builder()
+        builder.add_from_file(os.path.join(os.path.dirname(__file__), "postr.ui"))
+        builder.connect_signals(self)
+
+        get_builder_widgets(builder, self,
+                            ("window",
                             "upload_menu",
                             "upload_button",
                             "remove_menu",
@@ -108,10 +110,16 @@ class Postr(UniqueApp):
                             "license_combo",
                             "thumbview")
                            )
-        align_labels(glade, ("title_label", "desc_label",
+        align_labels(builder, ("title_label", "desc_label",
                              "tags_label", "set_label",
                              "privacy_label", "safety_label"))
-        
+
+        self.license_combo.set_flickr(self.flickr)
+        self.tags_entry.set_flickr(self.flickr)
+        self.statusbar.set_flickr(self.flickr)
+        self.group_selector.set_flickr(self.flickr)
+        self.set_combo.set_flickr(self.flickr)
+
         # Just for you, Daniel.
         try:
             if os.getlogin() == "daniels":
@@ -228,48 +236,6 @@ class Postr(UniqueApp):
             self.flickr.set_proxy(url)
         else:
             self.flickr.set_proxy(None)
-    
-    def get_custom_handler(self, glade, function_name, widget_name, str1, str2, int1, int2):
-        """libglade callback to create custom widgets."""
-        handler = getattr(self, function_name, None)
-        if handler:
-            return handler(str1, str2, int1, int2)
-        else:
-            widget = eval(function_name)
-            widget.show()
-            return widget
-
-    def group_selector_new(self, *args):
-        w = GroupSelector.GroupSelector(self.flickr)
-        w.show()
-        return w
-
-    def set_combo_new(self, *args):
-        import SetCombo
-        w = SetCombo.SetCombo(self.flickr)
-        w.show()
-        return w
-
-    def license_combo_new(self, *args):
-        import LicenseCombo
-        w = LicenseCombo.LicenseCombo(self.flickr)
-        w.show()
-        return w
-    
-    def image_list_new(self, *args):
-        """Custom widget creation function to make the image list."""
-        view = ImageList.ImageList()
-        view.show()
-        return view
-
-    def status_bar_new(self, *args):
-        bar = StatusBar.StatusBar(self.flickr)
-        bar.show()
-        return bar
-    def tag_entry_new(self, *args):
-        import TagsEntry
-        entry = TagsEntry.TagsEntry(self.flickr)
-        return entry
 
     def on_message(self, app, command, command_data, startup_id, screen, workspace):
         """Callback from UniqueApp, when a message arrives."""

@@ -35,20 +35,19 @@ def greek(size):
     return "%.1f%s" % (float(size)/factor, suffix)
 
 
-def get_widget_checked(glade, name):
-    """Get widget name from glade, and if it doesn't exist raise an exception
-    instead of returning None."""
-    widget = glade.get_widget(name)
-    if widget is None: raise "Cannot find widget %s" % name
+def get_widget_checked(builder, name):
+    """Get widget name from gtk.Builder object, and if it doesn't
+    exist raise an exception instead of returning None."""
+    widget = builder.get_object(name)
+    if widget is None: raise Exception, 'Cannot find widget %s' % name
     return widget
 
 
-def get_glade_widgets (glade, object, widget_names):
-    """Get the widgets in the list widget_names from the GladeXML object glade
+def get_builder_widgets (builder, object, widget_names):
+    """Get the widgets in the list widget_names from the gtk.Builder object
     and set them as attributes on object."""
     for name in widget_names:
-        setattr(object, name, get_widget_checked(glade, name))
-
+        setattr(object, name, get_widget_checked(builder, name))
 
 def get_thumb_size(srcw, srch, dstw, dsth):
     """Scale scrw x srch to an dimensions with the same ratio that fits as
@@ -59,11 +58,11 @@ def get_thumb_size(srcw, srch, dstw, dsth):
     return (int(srcw * scale), int(srch * scale))
 
 
-def align_labels(glade, names):
+def align_labels(builder, names):
     """Add the list of widgets identified by names in glade to a horizontal
     sizegroup."""
     group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-    widget = [group.add_widget(get_widget_checked(glade, name)) for name in names]
+    widget = [group.add_widget(get_widget_checked(builder, name)) for name in names]
 
 
 __buddy_cache = None
